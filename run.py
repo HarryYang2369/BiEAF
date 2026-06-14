@@ -6,7 +6,7 @@ from torch import nn, optim
 from tensorboardX import SummaryWriter
 from time import gmtime, strftime
 
-from model.model import BiDAF
+from model.model import BiEAF
 from model.data import SQuAD
 from model.ema import EMA
 import evaluate
@@ -14,7 +14,7 @@ import evaluate
 
 def train(args, data):
     device = torch.device(f"cuda:{args.gpu}" if torch.cuda.is_available() else "cpu")
-    model = BiDAF(args, data.WORD.vocab.vectors).to(device)
+    model = BiEAF(args, data.WORD.vocab.vectors).to(device)
 
     ema = EMA(args.exp_decay_rate)
     for name, param in model.named_parameters():
@@ -154,7 +154,7 @@ def main():
     best_model = train(args, data)
     if not os.path.exists('saved_models'):
         os.makedirs('saved_models')
-    torch.save(best_model.state_dict(), f'saved_models/BiDAF_{args.model_time}.pt')
+    torch.save(best_model.state_dict(), f'saved_models/BiEAF_{args.model_time}.pt')
     print('training finished!')
 
 
